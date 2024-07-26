@@ -1,0 +1,24 @@
+/* styles/tailwind.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+@layer components {
+    .container {
+      @apply md:px-[130px] m-auto;  
+    }
+    .boxShadow{
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }
+  }
+   
+  @layer {
+    .container {
+      @apply xs:px-[px-10px] md:px-[15px] lg:px-[30px] mx-auto;
+    }
+  }
