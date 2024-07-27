@@ -10,8 +10,8 @@ function Header() {
             <span className="text-red-500">Av</span>es
           </div>
           <div>
-            <ul className="flex gap-10">
-              <li className="text-2xl   ">
+            <ul className="flex xs:gap-4 sm:gap-10">
+              <li className="xs:text-lg md:text-2xl ">
                 <NavLink  
                 className={({ isActive }) =>
                   isActive ? "text-red-500 font-bold" : "text-black"
@@ -20,7 +20,7 @@ function Header() {
                   Home
                 </NavLink>
               </li>
-              <li className="text-2xl">
+              <li className="txs:text-lg md:text-2xl">
                 <NavLink
                   className={({ isActive }) =>
                     isActive ? "text-red-500 font-bold" : "text-black"
