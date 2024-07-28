@@ -1,19 +1,25 @@
 import {
-  useQuery,
   useQueryClient,
   useMutation,
   useInfiniteQuery,
 } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+
 import { deletePost, fetchPosts } from "../../api";
 import { postsTypes } from "../../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Post from "./post";
 import GlobalButton from "../button";
 
  
 function Posts(): JSX.Element {
   const queryClient = useQueryClient();
-  
+  const [showMore, setShowMore] = useState<Record<number, boolean>>({});
+  const [search, setSearch] = useState("");
+  const { ref, inView } = useInView({
+     
+    threshold: 0,
+  });
   const {
     data: posts,
     status,
@@ -30,8 +36,6 @@ function Posts(): JSX.Element {
     },
    });
 
-   console.log("posts", posts?.pages.flat());
- 
   // delete post
   const mutation = useMutation({
     mutationFn: (postId: number) => deletePost(postId),
@@ -42,21 +46,25 @@ function Posts(): JSX.Element {
   const handleDelete = (postId: number) => {
     mutation.mutate(postId);
   };
-  const [showMore, setShowMore] = useState<Record<number, boolean>>({});
-  const [search, setSearch] = useState("");
-
+  
   const toggleExpansion = (postId: number) => {
     setShowMore((prevState) => ({
       ...prevState,
       [postId]: !prevState[postId],
     }));
   };
-  // const filteredPosts =posts?.pages.length > 0 && posts?.pages.flat().filter((post: postsTypes) => post.title.toLowerCase().includes(search.toLowerCase()));
   const filteredPosts = posts?.pages
     .flat()
     .filter((post: postsTypes) =>
       post.title.toLowerCase().includes(search.toLowerCase())
-    );
+    ); 
+
+// infinite scroll logic
+    useEffect(() => {
+      if (inView && hasNextPage) {
+        fetchNextPage();
+      }
+    }, [inView, hasNextPage, fetchNextPage]);
 
   if (status === "error") return <div>{error.message}</div>;
   if (status === "success" && posts.pages.length === 0)
@@ -74,7 +82,7 @@ function Posts(): JSX.Element {
         />
       </div>
 
-      <div className=" grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
+      <div className=" grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 " >
         {filteredPosts?.map((post: postsTypes) => (
           <Post
             key={post.id}
@@ -85,12 +93,12 @@ function Posts(): JSX.Element {
           />
         ))}
       </div>
-      <div className="flex justify-center my-10">
+      <div className="flex justify-center my-10" ref={ref}>
         <GlobalButton
-          text={isFetchingNextPage ? "Loading..." : "Load More"}
+          text={isFetchingNextPage ? "Loading..." : hasNextPage ? "Load More" : "No more posts"}
           style="bg-slate-500 hover:bg-slate-600"
           onClick={() => fetchNextPage()}
-          disabled={!hasNextPage}
+          disabled={!hasNextPage || isFetchingNextPage}
         />
       </div>
     </div>

@@ -37,12 +37,20 @@ function AddNewPost({ post }: Post) {
   });
 
   const handleCreatePost = () => {
+    if (!title || !body) {
+      alert("Please fill in all fields");
+      return;
+    }
     mutate({ title, body, userId: 1 });
     setTitle("");
     setBody("");
   };
  
   const handleUpdatePost = () => {
+    if (!title || !body) {
+      alert("Please fill in all fields");
+      return;
+    }
     mutateupdate({ ...post, title, body, userId: 1 });
     setTitle("");
     setBody("");
