@@ -1,5 +1,7 @@
 import axios from 'axios';
+ 
 
+// Set up axios instance with base URL and headers
 const axioshelper = axios.create({
   baseURL: 'https://jsonplaceholder.typicode.com/',  
   headers: {
