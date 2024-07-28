@@ -1,20 +1,16 @@
 import { useState } from "react";
 import GlobalButton from "../button";
-// import { Post } from "../../types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, updatePost } from "../../api";
+import { Post } from "../../types";
+import { useNavigate } from "react-router-dom";
 
-export type Post = {
-  id: number;
-  title: string;
-  body: string;
-  post: {
-    id: number;
-    title: string;
-    body: string;
-  };
+type AddNewPostProps = {
+  post: Post;
 };
-function AddNewPost({ post }: Post) {
+const AddNewPost: React.FC<AddNewPostProps> = ({ post }) => {
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState(post?.title || "");
   const [body, setBody] = useState(post?.body || "");
 
@@ -54,6 +50,8 @@ function AddNewPost({ post }: Post) {
     mutateupdate({ ...post, title, body, userId: 1 });
     setTitle("");
     setBody("");
+    navigate("/");
+
   };
 
   return (
